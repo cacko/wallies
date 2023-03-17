@@ -47,27 +47,31 @@ def list_artworks(
         filters.append(Artcolor.Color.in_(similar))
         order_by.append(-fn.SUM(Artcolor.weight))
 
-    query = Artwork.select(
+    base_query = Artwork.select(
         Artwork,
         fn.string_agg(Artcolor.Color.cast("text"), ",").alias("colors")
-    ).where(*filters).join(Artcolor).group_by(Artwork)
+    )
+
+    query = base_query.where(*filters).join(Artcolor).group_by(Artwork)
 
     if len(order_by):
         query = query.order_by(*order_by)
 
     total = query.count()
-    page = min(max(1, page), floor(total / limit) + 1)
-    for artwork in query.paginate(page, limit):
-        results.append(
-            dict(
-                title=artwork.Name,
-                raw_src=artwork.raw_src,
-                muzei_src=artwork.muzei_src,
-                web_uri=artwork.web_uri,
-                category=artwork.Category,
-                colors=artwork.colors,
-            )
-        )
+    if total > 0:
+        page = min(max(1, page), floor(total / limit) + 1)
+    else:
+        total = limit
+        page = 1
+        query = base_query.order_by(fn.Random()).limit(total)
+    results = [dict(
+        title=artwork.Name,
+        raw_src=artwork.raw_src,
+        muzei_src=artwork.muzei_src,
+        web_uri=artwork.web_uri,
+        category=artwork.Category,
+        colors=artwork.colors,
+    ) for artwork in query.paginate(page, limit)]
     headers = {
         "X-Pagination-Total": f"{total}",
         "X-Pagination-Page": f"{page}",
