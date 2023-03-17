@@ -1,6 +1,9 @@
+from pathlib import Path
 from colorthief import ColorThief
 import numpy as np
 from functools import reduce
+from corefile import TempPath
+from PIL import Image
 
 
 def int_to_rgb(color: int) -> tuple[int, ...]:
@@ -64,19 +67,21 @@ class DominantColorsMeta(type):
 
 class DominantColors(object, metaclass=DominantColorsMeta):
 
-    _imageFile = None
     colors_count = 5
     colors_quality = 10
 
-    def __init__(self, imageFile, colors_count=5, colors_quality=1) -> None:
-        self._imageFile = imageFile
+    def __init__(self, image_path: Path, colors_count=5, colors_quality=1) -> None:
+        self.__image_path = image_path
         self.colors_count = colors_count
         self.colors_quality = colors_quality
         super().__init__()
 
     @property
     def colors(self) -> list[tuple[int, ...]]:
-        thumbnail = self._imageFile.thumbnail.open()
-        res = ColorThief(thumbnail).get_palette(
+        thumb_path = TempPath(f"{self.__image_path.name}-colors.jpg")
+        img = Image.open(self.__image_path.as_posix())
+        img.thumbnail((700, 700))
+        img.save(thumb_path.as_posix())
+        res = ColorThief(thumb_path.as_posix()).get_palette(
             self.colors_count, self.colors_quality)
         return res

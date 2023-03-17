@@ -1,11 +1,14 @@
 from peewee import Model, DoesNotExist
 from .database import Database
-from .fields import CategoryField, ColorField
+from .fields import CategoryField, ColorField, ImageField, Source
 from playhouse.shortcuts import model_to_dict
-from peewee import CharField, IntegerField, TimestampField, ForeignKeyField
+from peewee import CharField, IntegerField, DateTimeField, ForeignKeyField
 from faker import Faker
 from app.config import app_config
 from pathlib import Path
+from stringcase import spinalcase
+from datetime import datetime, timezone
+
 
 CDN_ROOT = (
     f"https://{app_config.aws.cloudfront_host}"
@@ -32,12 +35,16 @@ class DbModel(Model):
 
 
 class Artwork(DbModel):
-    Name = CharField(max_length=1000)
+    Name = CharField(max_length=1000, default=get_default_name)
     Category = CategoryField()
-    Image = CharField()
-    last_modified = TimestampField()
+    Image = ImageField()
+    last_modified = DateTimeField(default=datetime.now(tz=timezone.utc))
     slug = CharField()
-    Source = CharField()
+    Source = CharField(default=Source.MASHA.value)
+
+    def save(self, *args, **kwds):
+        self.slug = spinalcase(self.Name)
+        return super().save(*args, **kwds)
 
     @property
     def raw_src(self) -> str:

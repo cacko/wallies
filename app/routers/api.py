@@ -1,16 +1,21 @@
+import imp
 import logging
 from math import floor
 from typing import Optional
-from fastapi import APIRouter, Request
+from uuid import uuid4
+from fastapi import APIRouter, Request, Form, File
 from app.database.fields import Category
+from app.database.database import Database
 from app.database.models import Artwork, Artcolor
 from fastapi.responses import JSONResponse
 from app.core.colors import (
     hex_to_rgb,
     int_to_rgb,
     similar_colors,
-    rgb_to_int
+    rgb_to_int,
+    DominantColors
 )
+from corefile import TempPath
 from peewee import fn
 
 router = APIRouter()
@@ -64,3 +69,31 @@ def list_artworks(
         "X-Pagination-Page": f"{page}",
     }
     return JSONResponse(content=results, headers=headers)
+
+
+@router.post("/api/artworks.json", tags=["api"])
+def create_upload_file(
+    request: Request,
+    file: bytes = File(),
+    category: str = Form()
+
+):
+    uploaded_path = TempPath(uuid4().hex)
+    uploaded_path.write_bytes(file)
+    with Database.db.atomic():
+        obj = Artwork(
+            Category=Category(category.lower()),
+            Image=uploaded_path.as_posix()
+        )
+        obj.save()
+        colors = DominantColors(uploaded_path).colors
+        Artcolor.bulk_create([
+            Artcolor(
+                Color=rgb_to_int(color),
+                Artwork=obj,
+                weight=2 ** (5 - idx)
+            )
+            for idx, color in enumerate(colors)
+        ])
+        logging.debug(obj)
+        return ""
