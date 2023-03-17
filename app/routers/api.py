@@ -11,7 +11,7 @@ from peewee import fn
 router = APIRouter()
 
 
-@router.get("/api/artworks", tags=["api"])
+@router.get("/api/artworks.json", tags=["api"])
 def list_artworks(
     request: Request,
     Category__in: Optional[str] = None,
