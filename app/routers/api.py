@@ -5,7 +5,12 @@ from fastapi import APIRouter, Request
 from app.database.fields import Category
 from app.database.models import Artwork, Artcolor
 from fastapi.responses import JSONResponse
-from app.core.colors import hex_to_rgb, similar_colors, rgb_to_int
+from app.core.colors import (
+    hex_to_rgb,
+    int_to_rgb,
+    similar_colors,
+    rgb_to_int
+)
 from peewee import fn
 
 router = APIRouter()
@@ -15,7 +20,7 @@ router = APIRouter()
 def list_artworks(
     request: Request,
     Category__in: Optional[str] = None,
-    artcolors__Color__in: Optional[str] = None,
+    artcolors__Color__in: Optional[int] = None,
     page: int = 1,
     limit: int = 20
 ):
@@ -31,7 +36,7 @@ def list_artworks(
         allcolors = [hex_to_rgb(x.Color)
                      for x in Artcolor.select(Artcolor.Color).distinct()]
         similar = [rgb_to_int(x) for x in similar_colors(
-            hex_to_rgb(artcolors__Color__in), allcolors)]
+            int_to_rgb(artcolors__Color__in), allcolors)]
         logging.debug(f"similar colors to {artcolors__Color__in}, {similar}")
         color_artist = Artcolor.select(Artcolor.Artwork).where(
             Artcolor.Color.in_(similar))
