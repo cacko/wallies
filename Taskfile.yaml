@@ -18,10 +18,26 @@ tasks:
       - git commit -am "$(curl -s https://commit.cacko.net/index.txt)" || true
       - git push || true
 
+  pull:
+    desc: pulls from git
+    cmds:
+      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/{{.PROJECT}};git reset --hard;git pull'
+
+  pp:
+    desc: push and pull
+    cmds:
+      - task: push
+      - task: pull
+
+  logs:
+    desc: monitor logs
+    cmds:
+      - ssh $REMOTE_HOST 'source ~/.zshrc;journalctl --user -u {{.PROJECT}} -f --all'
+
   systemd-exec:
     desc: systemd exec
     cmds:
-      - direnv exec . mamba run --live-stream -n {{.PROJECT}} python -m app.cli serve
+      - direnv exec . mamba run --live-stream -n {{.PROJECT}} python -m app.cli
 
   export:
     desc: export env
