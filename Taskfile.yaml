@@ -1,0 +1,51 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  PROJECT: wallies
+
+tasks:
+  default:
+    desc: run flask cli
+    cmds:
+      - mamba run --live-stream -n {{.PROJECT}} python -m app.cli {{.CLI_ARGS}}
+
+  push:
+    desc: commit and pushes current changes
+    cmds:
+      - git add .  || true
+      - git commit -am "$(curl -s https://commit.cacko.net/index.txt)" || true
+      - git push || true
+
+  systemd-exec:
+    desc: systemd exec
+    cmds:
+      - direnv exec . mamba run --live-stream -n {{.PROJECT}} python -m app.cli serve
+
+  export:
+    desc: export env
+    cmds:
+      - mamba env export --no-builds -n {{.PROJECT}} > environment.yml
+
+  export-remote:
+    desc: export env
+    cmds:
+      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/botyo;mamba env export --no-builds -n {{.PROJECT}} > environment-remote.yml'
+      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/botyo;task push'
+      - git pull
+
+  install:
+    desc: update package
+    cmds:
+      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/botyo;mamba run --live-stream -n {{.PROJECT}} pip install {{.CLI_ARGS}} -U'
+      - task: export-remote
+      - task: deploy
+
+  deploy:
+    desc: shortcut for stop -> push -> pull -> restart
+    cmds:
+      - task: stop
+      - task: push
+      - task: pull
+      - task: restart
