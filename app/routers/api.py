@@ -1,4 +1,3 @@
-import imp
 import logging
 from math import floor
 from typing import Optional
@@ -31,25 +30,30 @@ def list_artworks(
 ):
     results = []
     filters = [True]
+    order_by = []
     if Category__in:
         try:
             category = Category(Category__in.lower())
             filters.append(Artwork.Category == category)
         except ValueError:
             pass
+
     if artcolors__Color__in:
         allcolors = [hex_to_rgb(x.Color)
                      for x in Artcolor.select(Artcolor.Color).distinct()]
         similar = [rgb_to_int(x) for x in similar_colors(
             int_to_rgb(artcolors__Color__in), allcolors)]
         logging.debug(f"similar colors to {artcolors__Color__in}, {similar}")
-        color_artist = Artcolor.select(Artcolor.Artwork).where(
-            Artcolor.Color.in_(similar))
-        filters.append(Artwork.id.in_(color_artist))
+        filters.append(Artcolor.Color.in_(similar))
+        order_by.append(-fn.SUM(Artcolor.weight))
+
     query = Artwork.select(
         Artwork,
         fn.string_agg(Artcolor.Color.cast("text"), ",").alias("colors")
     ).where(*filters).join(Artcolor).group_by(Artwork)
+
+    if len(order_by):
+        query = query.order_by(*order_by)
 
     total = query.count()
     page = min(max(1, page), floor(total / limit) + 1)
@@ -61,7 +65,7 @@ def list_artworks(
                 muzei_src=artwork.muzei_src,
                 web_uri=artwork.web_uri,
                 category=artwork.Category,
-                colors=artwork.colors
+                colors=artwork.colors,
             )
         )
     headers = {
