@@ -34,6 +34,26 @@ tasks:
     cmds:
       - ssh $REMOTE_HOST 'source ~/.zshrc;journalctl --user -u {{.PROJECT}} -f --all'
 
+  start:
+    desc: start the service
+    cmds:
+      - ssh $REMOTE_HOST 'source ~/.zshrc;systemctl --user start {{.PROJECT}}'
+
+
+  stop:
+    desc: stop the server
+    cmds:
+      - ssh $REMOTE_HOST 'source ~/.zshrc;systemctl --user stop {{.PROJECT}}'
+
+  restart:
+    desc: restart the service
+    cmds:
+      - task: stop
+      - ssh $REMOTE_HOST 'source ~/.zshrc;sleep 1'
+      - task: start
+
+
+
   systemd-exec:
     desc: systemd exec
     cmds:
