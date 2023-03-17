@@ -67,14 +67,14 @@ tasks:
   export-remote:
     desc: export env
     cmds:
-      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/botyo;mamba env export --no-builds -n {{.PROJECT}} > environment-remote.yml'
-      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/botyo;task push'
+      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/{{.PROJECT}};mamba env export --no-builds -n {{.PROJECT}} > environment-remote.yml'
+      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/{{.PROJECT}};task push'
       - git pull
 
   install:
     desc: update package
     cmds:
-      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/botyo;mamba run --live-stream -n {{.PROJECT}} pip install {{.CLI_ARGS}} -U'
+      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/{{.PROJECT}};mamba run --live-stream -n {{.PROJECT}} pip install {{.CLI_ARGS}} -U'
       - task: export-remote
       - task: deploy
 
