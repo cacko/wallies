@@ -1,3 +1,4 @@
+from email.policy import default
 import click
 from typing import Optional
 import logging
@@ -30,6 +31,13 @@ def cli(ctx: click.Context):
 @click.option("-o", "--outpath", default=None)
 def cli_palette(outpath: Optional[str] = None):
     generate_palette(outpath)
+
+
+@cli.command("stats")
+@click.option("-c", "--categories", is_flag=True, default=False)
+def cli_stats(categories: bool):
+    if categories:
+        
 
 
 @cli.command("quit")
