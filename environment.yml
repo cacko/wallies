@@ -1,6 +1,7 @@
 name: wallies
 channels:
   - conda-forge
+  - defaults
 dependencies:
   - autopep8=2.0.1
   - bzip2=1.0.8
@@ -21,12 +22,12 @@ dependencies:
   - setuptools=67.4.0
   - tk=8.6.12
   - tomli=2.0.1
-  - tzdata=2022g
   - wheel=0.38.4
   - xz=5.2.6
   - pip:
       - anyio==3.6.2
       - appdirs==1.4.4
+      - apscheduler==3.10.1
       - better-exceptions==0.3.3
       - boto3==1.26.93
       - botocore==1.29.93
@@ -63,6 +64,8 @@ dependencies:
       - python-dateutil==2.8.2
       - python-dotenv==1.0.0
       - python-multipart==0.0.6
+      - pytz==2022.7.1
+      - pytz-deprecation-shim==0.1.0.post0
       - pyyaml==6.0
       - rfc3986==1.5.0
       - rich==13.3.1
@@ -74,6 +77,8 @@ dependencies:
       - stringcase==1.2.0
       - structlog==22.3.0
       - typing-extensions==4.5.0
+      - tzdata==2022.7
+      - tzlocal==4.2
       - ujson==5.7.0
       - urllib3==1.26.15
       - uvicorn==0.20.0

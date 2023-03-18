@@ -16,6 +16,9 @@ from app.core.colors import (
 )
 from corefile import TempPath
 from peewee import fn
+from app.scheduler import Scheduler
+from app.core.palette import generate_palette
+from datetime import datetime, timedelta, timezone
 
 router = APIRouter()
 
@@ -104,4 +107,11 @@ def create_upload_file(
             for idx, color in enumerate(colors)
         ])
         logging.debug(obj)
+        Scheduler.add_job(
+            generate_palette,
+            name="generate_palette",
+            trugger='date',
+            replace_existing=True,
+            run_date=datetime.now(tz=timezone.utc) + timedelta(minutes=2)
+        )
         return ""

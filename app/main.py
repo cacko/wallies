@@ -3,6 +3,11 @@ from .routers import api
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import app_config
 import uvicorn
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+from app.scheduler import Scheduler
+
+ASSETS_PATH = Path(__file__).parent.parent / "assets"
 
 
 def create_app():
@@ -12,6 +17,16 @@ def create_app():
         "http://localhost:4200",
         "https://wallies.cacko.net"
     ]
+
+    assets_path = Path(app_config.api.assets)
+    if not assets_path.exists():
+        assets_path.mkdir(parents=True, exist_ok=True)
+
+    app.mount(
+        "/api/assets",
+        StaticFiles(directory=assets_path.as_posix()),
+        name="assets"
+    )
 
     app.add_middleware(
         CORSMiddleware,
@@ -33,5 +48,6 @@ def serve():
         workers=app_config.api.workers,
         factory=True
     )
+    Scheduler.start()
     server = uvicorn.Server(server_config)
     server.run()

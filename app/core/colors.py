@@ -52,8 +52,8 @@ def similar_colors(
 
 def combine_colors(colors: list[int], tolerance=70) -> list[int]:
     return reduce(
-        lambda r, x: [*r, int_to_rgb(x)]
-        if color_dist(r, int_to_rgb(x)) > tolerance
+        lambda r, x: [*r, int_to_rgb(x)]  # type: ignore
+        if color_dist(r, int_to_rgb(x)) > tolerance  # type: ignore
         else r,
         colors,
         [],
@@ -70,7 +70,12 @@ class DominantColors(object, metaclass=DominantColorsMeta):
     colors_count = 5
     colors_quality = 10
 
-    def __init__(self, image_path: Path, colors_count=5, colors_quality=1) -> None:
+    def __init__(
+        self,
+        image_path: Path,
+        colors_count=5,
+        colors_quality=1
+    ):
         self.__image_path = image_path
         self.colors_count = colors_count
         self.colors_quality = colors_quality

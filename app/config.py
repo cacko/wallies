@@ -9,6 +9,7 @@ class DbConfig(BaseModel):
 class ApiConfig(BaseModel):
     host: str
     port: int
+    assets: str
     workers: Optional[int] = Field(default=1)
     web_host: Optional[str] = Field(default="https://wallies.cacko.net")
 
