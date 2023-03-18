@@ -110,7 +110,7 @@ def create_upload_file(
         Scheduler.add_job(
             generate_palette,
             name="generate_palette",
-            trugger='date',
+            trigger='date',
             replace_existing=True,
             run_date=datetime.now(tz=timezone.utc) + timedelta(minutes=2)
         )
