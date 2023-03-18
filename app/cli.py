@@ -1,11 +1,10 @@
-import fnmatch
 import click
 from typing import Optional
 import logging
 import sys
 from app.core.palette import generate_palette
 from app.database.models import Artwork
-from tabulate import ta
+from tabulate import tabulate
 from peewee import fn
 
 
