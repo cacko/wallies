@@ -34,11 +34,15 @@ tasks:
     cmds:
       - ssh $REMOTE_HOST 'source ~/.zshrc;journalctl --user -u {{.PROJECT}} -f --all'
 
+  exec:
+    desc: run  cli on remote
+    cmds:
+      - ssh $REMOTE_HOST 'source ~/.zshrc;cd /var/www/{{.PROJECT}};mamba run --live-stream -n {{.PROJECT}} python -m app.cli {{.CLI_ARGS}}'
+
   start:
     desc: start the service
     cmds:
       - ssh $REMOTE_HOST 'source ~/.zshrc;systemctl --user start {{.PROJECT}}'
-
 
   stop:
     desc: stop the server
@@ -51,8 +55,6 @@ tasks:
       - task: stop
       - ssh $REMOTE_HOST 'source ~/.zshrc;sleep 1'
       - task: start
-
-
 
   systemd-exec:
     desc: systemd exec
