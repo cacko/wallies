@@ -1,9 +1,12 @@
-from email.policy import default
+import fnmatch
 import click
 from typing import Optional
 import logging
 import sys
 from app.core.palette import generate_palette
+from app.database.models import Artwork
+from tabulate import ta
+from peewee import fn
 
 
 def output(txt: str, color="bright_blue"):
@@ -37,7 +40,14 @@ def cli_palette(outpath: Optional[str] = None):
 @click.option("-c", "--categories", is_flag=True, default=False)
 def cli_stats(categories: bool):
     if categories:
-        
+        headers = ["category", "count"]
+        table = [
+            [artwork.Category, artwork.count]
+            for artwork in
+            Artwork.select(Artwork.Category, fn.COUNT(Artwork.id).alias("count")
+                           ).group_by(Artwork.Category)
+        ]
+        print(tabulate(table, headers, tablefmt="presto"))
 
 
 @cli.command("quit")
