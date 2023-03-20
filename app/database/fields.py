@@ -5,7 +5,7 @@ from app.core.s3 import S3
 from uuid import uuid4
 from pathlib import Path
 from corefile import TempPath
-from PIL import ImageOps, Image
+from PIL import Image
 
 
 class Category(StrEnum):
@@ -64,12 +64,6 @@ class ImageField(CharField):
         webp_path = TempPath(webp_fname)
         img.save(webp_path.as_posix())
         S3.upload(webp_path, webp_fname)
-
-        muzei = ImageOps.fit(img, (998, 2160))
-        muzei_fname = f"{stem}.muzei.png"
-        muzei_path = TempPath(muzei_fname)
-        muzei.save(muzei_path.as_posix())
-        S3.upload(muzei_path, muzei_fname)
 
         img.thumbnail((300, 300))
         thumb_fname = f"{stem}.thumbnail.webp"

@@ -70,7 +70,6 @@ def list_artworks(
     results = [dict(
         title=artwork.Name,
         raw_src=artwork.raw_src,
-        muzei_src=artwork.muzei_src,
         web_uri=artwork.web_uri,
         category=artwork.Category,
         colors=artwork.colors,

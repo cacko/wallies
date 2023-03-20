@@ -52,11 +52,6 @@ class Artwork(DbModel):
         return f"{CDN_ROOT}/{stem}.png.png"
 
     @property
-    def muzei_src(self) -> str:
-        stem = (Path(self.Image)).stem
-        return f"{CDN_ROOT}/{stem}.muzei.png"
-
-    @property
     def web_uri(self) -> str:
         return f"{app_config.api.web_host}/v/{self.slug}"
 
