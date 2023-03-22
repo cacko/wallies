@@ -102,13 +102,14 @@ def get_list_response(
 @router.get("/api/artworks", tags=["api"])
 def list_artworks(
     category: Optional[str] = None,
-    color: Optional[int] = None,
+    color: Optional[str] = None,
     page: int = 1,
     limit: int = 20
 ):
     return get_list_response(
-        categories=category.split(","),
-        colors=color,
+        categories=split_with_quotes(category, ",") if category else None,
+        colors=list(map(int, split_with_quotes(color, ","))
+                    ) if color else None,
         page=page,
         limit=limit
     )
