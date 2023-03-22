@@ -15,6 +15,7 @@ from app.core.colors import (
     rgb_to_int,
     DominantColors
 )
+from corestring import split_with_quotes
 from corefile import TempPath
 from peewee import fn
 from app.scheduler import Scheduler
@@ -100,13 +101,13 @@ def get_list_response(
 
 @router.get("/api/artworks", tags=["api"])
 def list_artworks(
-    category: Optional[list[str]] = None,
-    color: Optional[list[int]] = None,
+    category: Optional[str] = None,
+    color: Optional[int] = None,
     page: int = 1,
     limit: int = 20
 ):
     return get_list_response(
-        categories=category,
+        categories=category.split(","),
         colors=color,
         page=page,
         limit=limit
