@@ -34,9 +34,10 @@ def get_list_response(
     filters = [True]
     order_by = []
     try:
+        logging.warning(f"CATEGORIES -> {categories}")
         assert categories
         f_categories = Category.to_categories(categories)
-        logging.debug(f"CATEGORIES -> {f_categories}")
+        logging.warning(f"CATEGORIES -> {f_categories}")
         assert f_categories
         filters.append(Artwork.Category.in_(f_categories))
     except AssertionError:
