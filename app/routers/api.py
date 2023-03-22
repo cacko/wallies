@@ -1,3 +1,4 @@
+from functools import reduce
 import logging
 from math import floor
 from typing import Optional
@@ -23,32 +24,46 @@ from datetime import datetime, timedelta, timezone
 router = APIRouter()
 
 
-@router.get("/api/artworks.json", tags=["api"])
-def list_artworks(
-    request: Request,
-    Category__in: Optional[str] = None,
-    artcolors__Color__in: Optional[int] = None,
+def get_list_response(
+    categories: Optional[list[str]] = None,
+    colors: Optional[list[int]] = None,
     page: int = 1,
-    limit: int = 20
+    limit: int = 20,
 ):
     results = []
     filters = [True]
     order_by = []
-    if Category__in:
-        try:
-            category = Category(Category__in.lower())
-            filters.append(Artwork.Category == category)
-        except ValueError:
-            pass
+    try:
+        assert categories
+        f_categories = Category.to_categories(categories)
+        assert f_categories
+        filters.append(Artwork.Category.in_(f_categories))
+    except AssertionError:
+        pass
 
-    if artcolors__Color__in:
+    try:
+        assert colors
         allcolors = [hex_to_rgb(x.Color)
                      for x in Artcolor.select(Artcolor.Color).distinct()]
-        similar = [rgb_to_int(x) for x in similar_colors(
-            int_to_rgb(artcolors__Color__in), allcolors)]
-        logging.debug(f"similar colors to {artcolors__Color__in}, {similar}")
+        assert allcolors
+        similar: list[int] = reduce(
+            lambda r, c: [
+                *r,
+                *[
+                    rgb_to_int(x)
+                    for x in similar_colors(int_to_rgb(c), allcolors)
+                    if rgb_to_int(x) not in r
+                ]
+            ],
+            colors,
+            []
+        )
+        assert similar
+        logging.debug(f"similar colors to {colors}, {similar}")
         filters.append(Artcolor.Color.in_(similar))
         order_by.append(-fn.SUM(Artcolor.weight))
+    except AssertionError:
+        pass
 
     base_query = Artwork.select(
         Artwork,
@@ -79,6 +94,37 @@ def list_artworks(
         "X-Pagination-Page": f"{page}",
     }
     return JSONResponse(content=results, headers=headers)
+
+
+@router.get("/api/artworks", tags=["api"])
+def list_artworks(
+    category: Optional[list[str]] = None,
+    color: Optional[list[int]] = None,
+    page: int = 1,
+    limit: int = 20
+):
+    return get_list_response(
+        categories=category,
+        colors=color,
+        page=page,
+        limit=limit
+    )
+
+
+@router.get("/api/artworks.json", tags=["api"])
+def list_artworks_django(
+    request: Request,
+    Category__in: Optional[str] = None,
+    artcolors__Color__in: Optional[int] = None,
+    page: int = 1,
+    limit: int = 20
+):
+    return get_list_response(
+        categories=[Category__in] if Category__in else None,
+        colors=[artcolors__Color__in] if artcolors__Color__in else None,
+        page=page,
+        limit=limit
+    )
 
 
 @router.post("/api/artworks.json", tags=["api"])

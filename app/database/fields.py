@@ -23,6 +23,10 @@ class Category(StrEnum):
     def values(cls):
         return [member.value for member in cls.__members__.values()]
 
+    @classmethod
+    def to_categories(cls, values: list[str]) -> list['Category']:
+        return [cls(x.lower()) for x in values if x.lower() in cls.values()]
+
 
 class Source(StrEnum):
     MASHA = "masha"
