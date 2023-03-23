@@ -120,7 +120,7 @@ def get_artwork(title: str):
     artwork = Artwork.select(
         Artwork,
         fn.string_agg(Artcolor.Color.cast("text"), ",").alias("colors")
-    ).where(Artwork.Name == title).get_or_none()
+    ).where(Artwork.Name == title).first()
     return dict(
         title=artwork.Name,
         raw_src=artwork.raw_src,
