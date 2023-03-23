@@ -117,10 +117,18 @@ def list_artworks(
 
 @router.get("/api/artwork/{title}", tags=["api"])
 def get_artwork(title: str):
-    artwork = Artwork.select(
-        Artwork,
-        fn.string_agg(Artcolor.Color.cast("text"), ",").alias("colors")
-    ).where(Artwork.Name == title).first()
+    artwork = (
+        Artwork
+        .select(
+            Artwork,
+            fn.string_agg(Artcolor.Color.cast(
+                "text"), ",").alias("colors")
+        ).join(Artcolor)
+        .where(Artwork.Name == title)
+        .group_by(Artwork)
+        .get()
+    )
+    assert artwork
     return dict(
         title=artwork.Name,
         raw_src=artwork.raw_src,
