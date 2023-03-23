@@ -115,6 +115,18 @@ def list_artworks(
     )
 
 
+@router.get("/api/artwork/{title}", tags=["api"])
+def get_artwork(title: str):
+    artwork = Artwork.get_or_none(Artwork.Name == title)
+    return dict(
+        title=artwork.Name,
+        raw_src=artwork.raw_src,
+        web_uri=artwork.web_uri,
+        category=artwork.Category,
+        colors=artwork.colors,
+    )
+
+
 @router.get("/api/artworks.json", tags=["api"])
 def list_artworks_django(
     request: Request,
