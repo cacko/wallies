@@ -105,7 +105,7 @@ def list_artworks(
     category: Optional[str] = None,
     color: Optional[str] = None,
     page: int = 1,
-    limit: int = 20
+    limit: int = 209
 ):
     return get_list_response(
         categories=split_with_quotes(category, ",") if category else None,
