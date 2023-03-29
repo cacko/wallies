@@ -63,6 +63,7 @@ class Artwork(DbModel):
     class Meta:
         database = Database.db
         table_name = 'walls_artwork'
+        order_by = ["-last_modified"]
 
 
 class Artcolor(DbModel):
