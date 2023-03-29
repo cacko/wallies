@@ -89,6 +89,7 @@ def get_list_response(
         title=artwork.Name,
         raw_src=artwork.raw_src,
         web_uri=artwork.web_uri,
+        webp_src=artwork.webp_src,
         category=artwork.Category,
         colors=artwork.colors,
     ) for artwork in query.paginate(page, limit)]
