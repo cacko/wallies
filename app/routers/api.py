@@ -97,7 +97,7 @@ def get_list_response(
         webp_src=artwork.webp_src,
         category=artwork.Category,
         colors=artwork.colors,
-        last_modified=datetime.timestamp(artwork.last_modified),
+        last_modified=datetime.timestamp(-artwork.last_modified),
     ) for artwork in query.paginate(page, limit)]
     headers = {
         "X-Pagination-Total": f"{total}",
