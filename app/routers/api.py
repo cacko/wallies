@@ -30,6 +30,7 @@ def get_list_response(
     colors: Optional[list[int]] = None,
     page: int = 1,
     limit: int = 20,
+    last_modified: Optional[float] = None
 ):
     results = []
     filters = [True]
@@ -43,6 +44,10 @@ def get_list_response(
         filters.append(Artwork.Category.in_(f_categories))
     except AssertionError:
         pass
+
+    if last_modified:
+        filters.append(Artwork.last_modified >
+                       datetime.fromtimestamp(last_modified))
 
     try:
         assert colors
@@ -92,6 +97,7 @@ def get_list_response(
         webp_src=artwork.webp_src,
         category=artwork.Category,
         colors=artwork.colors,
+        last_modified=datetime.timestamp(artwork.last_modified),
     ) for artwork in query.paginate(page, limit)]
     headers = {
         "X-Pagination-Total": f"{total}",
@@ -105,14 +111,16 @@ def list_artworks(
     category: Optional[str] = None,
     color: Optional[str] = None,
     page: int = 1,
-    limit: int = 209
+    limit: int = 209,
+    last_modified: Optional[float] = None
 ):
     return get_list_response(
         categories=split_with_quotes(category, ",") if category else None,
         colors=list(map(int, split_with_quotes(color, ","))
                     ) if color else None,
         page=page,
-        limit=limit
+        limit=limit,
+        last_modified=last_modified
     )
 
 
@@ -137,6 +145,8 @@ def get_artwork(title: str):
         webp_src=artwork.webp_src,
         category=artwork.Category,
         colors=artwork.colors,
+        last_modified=datetime.timestamp(artwork.last_modified),
+
     )
 
 
