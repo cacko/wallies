@@ -45,9 +45,9 @@ def get_list_response(
     except AssertionError:
         pass
 
-    if last_modified:
-        filters.append(Artwork.last_modified >
-                       datetime.fromtimestamp(last_modified))
+    # if last_modified:
+    #     filters.append(Artwork.last_modified >
+    #                    datetime.fromtimestamp(last_modified))
 
     try:
         assert colors
