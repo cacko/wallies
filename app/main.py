@@ -46,6 +46,7 @@ def serve():
         host=app_config.api.host,
         port=app_config.api.port,
         workers=app_config.api.workers,
+        reload=True,
         factory=True
     )
     Scheduler.start()

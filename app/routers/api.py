@@ -36,18 +36,16 @@ def get_list_response(
     filters = [True]
     order_by = []
     try:
-        logging.warning(f"CATEGORIES -> {categories}")
         assert categories
         f_categories = Category.to_categories(categories)
-        logging.warning(f"CATEGORIES -> {f_categories}")
         assert f_categories
         filters.append(Artwork.Category.in_(f_categories))
     except AssertionError:
         pass
 
-    # if last_modified:
-    #     filters.append(Artwork.last_modified >
-    #                    datetime.fromtimestamp(last_modified))
+    if last_modified:
+        filters.append(Artwork.last_modified >
+                       datetime.fromtimestamp(last_modified))
 
     try:
         assert colors
@@ -86,10 +84,10 @@ def get_list_response(
     total = query.count()
     if total > 0:
         page = min(max(1, page), floor(total / limit) + 1)
-    else:
-        total = limit
-        page = 1
-        query = base_query.order_by(fn.Random()).limit(total)
+    # else:
+    #     total = limit
+    #     page = 1
+    #     query = base_query.order_by(fn.Random()).limit(total)
     results = [dict(
         title=artwork.Name,
         raw_src=artwork.raw_src,

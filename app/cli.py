@@ -43,8 +43,10 @@ def cli_stats(categories: bool):
         table = [
             [artwork.Category, artwork.count]
             for artwork in
-            Artwork.select(Artwork.Category, fn.COUNT(Artwork.id).alias("count")
-                           ).group_by(Artwork.Category)
+            Artwork.select(
+                Artwork.Category,
+                fn.COUNT(Artwork.id).alias("count")
+            ).group_by(Artwork.Category)
         ]
         print(tabulate(table, headers, tablefmt="presto"))
 
