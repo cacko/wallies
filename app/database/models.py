@@ -1,4 +1,4 @@
-from peewee import Model, DoesNotExist, SQL
+from peewee import Model, DoesNotExist
 from .database import Database
 from .fields import CategoryField, ColorField, ImageField, Source
 from playhouse.shortcuts import model_to_dict
@@ -7,7 +7,7 @@ from faker import Faker
 from app.config import app_config
 from pathlib import Path
 from stringcase import spinalcase
-
+import datetime
 
 CDN_ROOT = (
     f"https://{app_config.aws.cloudfront_host}"
@@ -37,8 +37,7 @@ class Artwork(DbModel):
     Name = CharField(max_length=1000, default=get_default_name)
     Category = CategoryField()
     Image = ImageField()
-    last_modified = DateTimeField(
-        constraints=[SQL("DEFAULT (datetime('now'))")])
+    last_modified = DateTimeField(default=datetime.datetime.now)
     slug = CharField()
     Source = CharField(default=Source.MASHA.value)
 
