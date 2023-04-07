@@ -95,6 +95,7 @@ def get_list_response(
         webp_src=artwork.webp_src,
         category=artwork.Category,
         colors=artwork.colors,
+        id=artwork.slug,
         last_modified=datetime.timestamp(artwork.last_modified),
     ) for artwork in query.paginate(page, limit)]
     headers = {
@@ -143,8 +144,8 @@ def get_artwork(title: str):
         webp_src=artwork.webp_src,
         category=artwork.Category,
         colors=artwork.colors,
+        id=artwork.slug,
         last_modified=datetime.timestamp(artwork.last_modified),
-
     )
 
 
