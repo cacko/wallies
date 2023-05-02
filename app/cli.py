@@ -5,7 +5,7 @@ import logging
 import sys
 from app.core.palette import generate_palette
 from app.core.s3 import S3
-from app.database.models import Artwork
+from app.database.models import Artcolor, Artwork
 from tabulate import tabulate
 from peewee import fn
 
@@ -58,6 +58,7 @@ def cli_stats(categories: bool):
 def cli_delete(slug: str):
     artwork = Artwork.get(Artwork.slug == slug)
     assert artwork
+    Artcolor.delete().where(Artcolor.Artwork == artwork).execute()
     raw_src = Path(artwork.raw_src)
     S3.delete(raw_src.name)
     artwork.delete_instance()
