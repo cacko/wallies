@@ -51,7 +51,7 @@ class Artwork(DbModel):
     def delete_instance(self, recursive=False, delete_nullable=False):
         self.deleted = True
         self.last_modified = datetime.datetime.now()
-        self.update()
+        self.save()
 
     def save(self, *args, **kwds):
         self.slug = spinalcase(self.Name)
