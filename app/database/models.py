@@ -2,7 +2,13 @@ from peewee import Model, DoesNotExist
 from .database import Database
 from .fields import CategoryField, ColorField, ImageField, Source
 from playhouse.shortcuts import model_to_dict
-from peewee import CharField, IntegerField, DateTimeField, ForeignKeyField
+from peewee import (
+    CharField,
+    IntegerField,
+    DateTimeField,
+    ForeignKeyField,
+    BooleanField
+)
 from faker import Faker
 from app.config import app_config
 from pathlib import Path
@@ -40,6 +46,12 @@ class Artwork(DbModel):
     last_modified = DateTimeField(default=datetime.datetime.now)
     slug = CharField()
     Source = CharField(default=Source.MASHA.value)
+    deleted = BooleanField(default=False)
+
+    def delete_instance(self, recursive=False, delete_nullable=False):
+        self.deleted = True
+        self.last_modified = datetime.datetime.now()
+        self.update()
 
     def save(self, *args, **kwds):
         self.slug = spinalcase(self.Name)

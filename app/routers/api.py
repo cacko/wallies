@@ -146,6 +146,7 @@ def get_artwork(title: str):
         colors=artwork.colors,
         id=artwork.slug,
         last_modified=datetime.timestamp(artwork.last_modified),
+        deleted=artwork.deleted
     )
 
 
