@@ -58,11 +58,6 @@ def cli_stats(categories: bool):
 def cli_delete(slug: str):
     artwork = Artwork.get(Artwork.slug == slug)
     assert artwork
-    Artcolor.delete().where(Artcolor.Artwork == artwork).execute()
-    raw_src = Path(artwork.raw_src)
-    S3.delete(raw_src.name)
-    webp_src = Path(artwork.webp_src)
-    S3.delete(webp_src.name)
     artwork.delete_instance()
 
 
