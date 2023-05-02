@@ -97,6 +97,7 @@ def get_list_response(
         colors=artwork.colors,
         id=artwork.slug,
         last_modified=datetime.timestamp(artwork.last_modified),
+        deleted=artwork.deleted
     ) for artwork in query.paginate(page, limit)]
     headers = {
         "X-Pagination-Total": f"{total}",
