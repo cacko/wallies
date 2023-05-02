@@ -149,22 +149,6 @@ def get_artwork(title: str):
     )
 
 
-@router.get("/api/artworks.json", tags=["api"])
-def list_artworks_django(
-    request: Request,
-    Category__in: Optional[str] = None,
-    artcolors__Color__in: Optional[int] = None,
-    page: int = 1,
-    limit: int = 20
-):
-    return get_list_response(
-        categories=[Category__in] if Category__in else None,
-        colors=[artcolors__Color__in] if artcolors__Color__in else None,
-        page=page,
-        limit=limit
-    )
-
-
 @router.post("/api/artworks.json", tags=["api"])
 def create_upload_file(
     request: Request,
@@ -197,4 +181,4 @@ def create_upload_file(
             replace_existing=True,
             run_date=datetime.now(tz=timezone.utc) + timedelta(minutes=2)
         )
-        return ""
+        return obj.to_dict()
