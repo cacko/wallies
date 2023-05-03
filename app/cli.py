@@ -1,11 +1,9 @@
-from pathlib import Path
 import click
 from typing import Optional
 import logging
 import sys
 from app.core.palette import generate_palette
-from app.core.s3 import S3
-from app.database.models import Artcolor, Artwork
+from app.database.models import Artwork
 from tabulate import tabulate
 from peewee import fn
 

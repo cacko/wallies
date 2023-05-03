@@ -47,6 +47,7 @@ class Artwork(DbModel):
     slug = CharField()
     Source = CharField(default=Source.MASHA.value)
     deleted = BooleanField(default=False)
+    botyo_id = CharField(null=True)
 
     def delete_instance(self, recursive=False, delete_nullable=False):
         self.deleted = True

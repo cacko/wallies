@@ -3,7 +3,7 @@ import logging
 from math import floor
 from typing import Optional
 from uuid import uuid4
-from fastapi import APIRouter, Request, Form, File
+from fastapi import APIRouter, HTTPException, Request, Form, File
 from app.database.fields import Category
 from app.database.database import Database
 from app.database.models import Artwork, Artcolor
@@ -126,36 +126,40 @@ def list_artworks(
 
 @router.get("/api/artwork/{title}", tags=["api"])
 def get_artwork(title: str):
-    artwork = (
-        Artwork
-        .select(
-            Artwork,
-            fn.string_agg(Artcolor.Color.cast(
-                "text"), ",").alias("colors")
-        ).join(Artcolor)
-        .where(Artwork.slug == title)
-        .group_by(Artwork)
-        .get()
-    )
-    assert artwork
-    return dict(
-        title=artwork.Name,
-        raw_src=artwork.raw_src,
-        web_uri=artwork.web_uri,
-        webp_src=artwork.webp_src,
-        category=artwork.Category,
-        colors=artwork.colors,
-        id=artwork.slug,
-        last_modified=datetime.timestamp(artwork.last_modified),
-        deleted=artwork.deleted
-    )
+    try:
+        artwork = (
+            Artwork
+            .select(
+                Artwork,
+                fn.string_agg(Artcolor.Color.cast(
+                    "text"), ",").alias("colors")
+            ).join(Artcolor)
+            .where(Artwork.slug == title | Artwork.botyo_id == title)
+            .group_by(Artwork)
+            .get()
+        )
+        assert artwork
+        return dict(
+            title=artwork.Name,
+            raw_src=artwork.raw_src,
+            web_uri=artwork.web_uri,
+            webp_src=artwork.webp_src,
+            category=artwork.Category,
+            colors=artwork.colors,
+            id=artwork.slug,
+            last_modified=datetime.timestamp(artwork.last_modified),
+            deleted=artwork.deleted
+        )
+    except AssertionError:
+        raise HTTPException(404)
 
 
 @router.post("/api/artworks.json", tags=["api"])
 def create_upload_file(
     request: Request,
     file: bytes = File(),
-    category: str = Form()
+    category: str = Form(),
+    botyo_id: str = Form()
 
 ):
     uploaded_path = TempPath(uuid4().hex)
@@ -163,7 +167,8 @@ def create_upload_file(
     with Database.db.atomic():
         obj = Artwork(
             Category=Category(category.lower()),
-            Image=uploaded_path.as_posix()
+            Image=uploaded_path.as_posix(),
+            botyo_id=botyo_id
         )
         obj.save()
         colors = DominantColors(uploaded_path).colors
