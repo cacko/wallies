@@ -134,7 +134,7 @@ def get_artwork(title: str):
                 fn.string_agg(Artcolor.Color.cast(
                     "text"), ",").alias("colors")
             ).join(Artcolor)
-            .where(Artwork.slug == title | Artwork.botyo_id == title)
+            .where((Artwork.slug == title) | (Artwork.botyo_id == title))
             .group_by(Artwork)
             .get()
         )
