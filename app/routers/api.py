@@ -93,6 +93,7 @@ def get_list_response(
         raw_src=artwork.raw_src,
         web_uri=artwork.web_uri,
         webp_src=artwork.webp_src,
+        thumb_src=artwork.thumb_src,
         category=artwork.Category,
         colors=artwork.colors,
         id=artwork.slug,

@@ -1,7 +1,6 @@
 name: wallies
 channels:
   - conda-forge
-  - defaults
 dependencies:
   - autopep8=2.0.1
   - bzip2=1.0.8
@@ -22,67 +21,55 @@ dependencies:
   - setuptools=67.4.0
   - tk=8.6.12
   - tomli=2.0.1
+  - typing_extensions=4.7.0
+  - tzdata=2023c
   - wheel=0.38.4
   - xz=5.2.6
   - pip:
-      - anyio==3.6.2
+      - anyio==3.7.0
       - appdirs==1.4.4
       - apscheduler==3.10.1
       - better-exceptions==0.3.3
-      - boto3==1.26.93
-      - botocore==1.29.93
-      - certifi==2022.12.7
+      - boto3==1.26.165
+      - botocore==1.29.165
+      - certifi==2023.5.7
       - click==8.1.3
       - colorama==0.4.6
       - colorthief==0.2.1
       - corefile==0.1.2
-      - corelog==0.0.8
-      - dnspython==2.3.0
-      - email-validator==1.3.1
-      - faker==17.6.0
-      - fastapi==0.92.0
+      - corelog==0.0.9
+      - corestring==0.1.19
+      - faker==18.11.2
+      - fastapi==0.99.0
       - filetype==1.2.0
       - fs==2.4.16
       - h11==0.14.0
-      - httpcore==0.16.3
-      - httptools==0.5.0
-      - httpx==0.23.3
+      - httpcore==0.17.2
+      - httpx==0.24.1
       - idna==3.4
-      - itsdangerous==2.1.2
-      - jinja2==3.1.2
       - jmespath==1.0.1
-      - markdown-it-py==2.2.0
-      - markupsafe==2.1.2
+      - markdown-it-py==3.0.0
       - mdurl==0.1.2
-      - numpy==1.24.2
-      - orjson==3.8.7
-      - peewee==3.16.0
-      - pillow==9.4.0
-      - psycopg2==2.9.5
-      - pydantic==1.10.5
-      - pygments==2.14.0
+      - numpy==1.25.0
+      - peewee==3.16.2
+      - pillow==10.0.0
+      - psycopg2-binary==2.9.6
+      - pydantic==1.10.10
+      - pygments==2.15.1
       - python-dateutil==2.8.2
-      - python-dotenv==1.0.0
-      - python-multipart==0.0.6
-      - pytz==2022.7.1
-      - pytz-deprecation-shim==0.1.0.post0
-      - pyyaml==6.0
-      - rfc3986==1.5.0
-      - rich==13.3.1
-      - s3transfer==0.6.0
-      - semver==2.13.0
+      - pytz==2023.3
+      - rich==13.4.2
+      - s3transfer==0.6.1
+      - semver==3.0.1
       - six==1.16.0
       - sniffio==1.3.0
-      - starlette==0.25.0
+      - starlette==0.27.0
       - stringcase==1.2.0
-      - structlog==22.3.0
-      - typing-extensions==4.5.0
-      - tzdata==2022.7
-      - tzlocal==4.2
-      - ujson==5.7.0
-      - urllib3==1.26.15
-      - uvicorn==0.20.0
-      - uvloop==0.17.0
-      - watchfiles==0.18.1
-      - websockets==10.4
-prefix: /Volumes/Devo/miniforge3/envs/wallies
+      - structlog==23.1.0
+      - tabulate==0.9.0
+      - types-tabulate==0.9.0.2
+      - types-ujson==5.8.0.0
+      - tzlocal==5.0.1
+      - urllib3==1.26.16
+      - uvicorn==0.22.0
+prefix: /Volumes/Devo/Users/jago/miniforge3/envs/wallies

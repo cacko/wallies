@@ -67,6 +67,11 @@ class Artwork(DbModel):
     def webp_src(self) -> str:
         stem = (Path(self.Image)).stem
         return f"{CDN_ROOT}/{stem}.webp"
+    
+    @property
+    def thumb_src(self) -> str:
+        stem = (Path(self.Image)).stem
+        return f"{CDN_ROOT}/{stem}.thumbnail.webp"
 
     @property
     def web_uri(self) -> str:
