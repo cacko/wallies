@@ -33,7 +33,7 @@ def create_app():
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["x-user-token"],
+        allow_headers=("x-user-token",),
     )
 
     app.include_router(api.router)
