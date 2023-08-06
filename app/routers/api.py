@@ -6,7 +6,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Body, HTTPException, Request, Form, File
 from app.database.fields import Category
 from app.database.database import Database
-from app.database.models import Artwork, Artcolor
+from app.database.models import Artwork, Artcolor, Cuteness
 from fastapi.responses import JSONResponse
 from app.core.colors import (
     hex_to_rgb,
@@ -15,7 +15,7 @@ from app.core.colors import (
     rgb_to_int,
     DominantColors
 )
-from app.routers.models import Cuteness
+from app.routers.models import CutenessData
 from corestring import split_with_quotes
 from corefile import TempPath
 from peewee import fn
@@ -195,8 +195,12 @@ def create_upload_file(
 
 @router.put("/api/cuteness.json", tags=["api"])
 def add_cuteness(
-    item: Annotated[Cuteness, Body(embed=True)]
+    request: Request,
+    item: Annotated[CutenessData, Body(embed=True)]
 ):
+    client = request.client
+    if not client.host.startswith("192.168.0"):
+        raise HTTPException(401)
     with Database.db.atomic():
         obj = Cuteness(**item.dict())
         obj.save()

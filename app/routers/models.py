@@ -2,6 +2,6 @@ from pydantic import BaseModel
 from app.database.fields import AnimalName
 
 
-class Cuteness(BaseModel):
+class CutenessData(BaseModel):
     Path: str
     Animal: AnimalName
