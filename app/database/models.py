@@ -1,13 +1,13 @@
 from peewee import Model, DoesNotExist
 from .database import Database
-from .fields import CategoryField, ColorField, ImageField, Source
+from .fields import CategoryField, AnimalField, ColorField, ImageField, Source
 from playhouse.shortcuts import model_to_dict
 from peewee import (
     CharField,
     IntegerField,
     DateTimeField,
     ForeignKeyField,
-    BooleanField
+    BooleanField,
 )
 from faker import Faker
 from app.config import app_config
@@ -67,7 +67,7 @@ class Artwork(DbModel):
     def webp_src(self) -> str:
         stem = (Path(self.Image)).stem
         return f"{CDN_ROOT}/{stem}.webp"
-    
+
     @property
     def thumb_src(self) -> str:
         stem = (Path(self.Image)).stem
@@ -92,3 +92,15 @@ class Artcolor(DbModel):
         database = Database.db
         table_name = 'walls_artcolor'
         order_by = ["-weight"]
+
+
+class Cuteness(DbModel):
+    Url = CharField(max_length=1000)
+    Animal = AnimalField()
+    last_modified = DateTimeField(default=datetime.datetime.now)
+    deleted = BooleanField(default=False)
+
+    class Meta:
+        database = Database.db
+        table_name = 'walls_cuteness'
+        order_by = ["-last_modified"]
