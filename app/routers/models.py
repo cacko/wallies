@@ -3,5 +3,5 @@ from app.database.fields import AnimalName
 
 
 class Cuteness(BaseModel):
-    Url: str
+    Path: str
     Animal: AnimalName

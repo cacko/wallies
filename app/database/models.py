@@ -95,7 +95,7 @@ class Artcolor(DbModel):
 
 
 class Cuteness(DbModel):
-    Url = CharField(max_length=1000)
+    Path = CharField(max_length=1000, unique=True)
     Animal = AnimalField()
     last_modified = DateTimeField(default=datetime.datetime.now)
     deleted = BooleanField(default=False)
