@@ -198,6 +198,6 @@ def add_cuteness(
     item: Annotated[Cuteness, Body(embed=True)]
 ):
     with Database.db.atomic():
-        obj = Cuteness(**item)
+        obj = Cuteness(**item.dict())
         obj.save()
         return obj.dict()
