@@ -204,4 +204,4 @@ def add_cuteness(
     with Database.db.atomic():
         obj = Cuteness(**item.dict())
         obj.save()
-        return obj.dict()
+        return obj.to_dict()
