@@ -3,10 +3,9 @@ from typing import Optional
 import logging
 import sys
 from app.core.palette import generate_palette
-from app.database.models import Artwork, Cuteness
+from app.database.models import Artwork
 from tabulate import tabulate
 from peewee import fn
-from app.database.database import Database
 
 
 def output(txt: str, color="bright_blue"):
@@ -27,7 +26,6 @@ def cli(ctx: click.Context):
     if ctx.invoked_subcommand is None:
         from app.main import serve
         output("App started")
-        Database.db.create_tables([Cuteness])
         serve()
 
 
