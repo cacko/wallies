@@ -197,13 +197,7 @@ def create_upload_file(
 def add_cuteness(
     item: Annotated[Cuteness, Body(embed=True)]
 ):
-    return item
-    # uploaded_path = TempPath(uuid4().hex)
-    # uploaded_path.write_bytes(file)
-    # with Database.db.atomic():
-    #     obj = Artwork(
-    #         Category=Category(category.lower()),
-    #         Image=uploaded_path.as_posix(),
-    #         botyo_id=botyo_id
-    #     )
-    #     obj.save()
+    with Database.db.atomic():
+        obj = Cuteness(**item)
+        obj.save()
+        return obj.dict()
