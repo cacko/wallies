@@ -92,15 +92,3 @@ class Artcolor(DbModel):
         database = Database.db
         table_name = 'walls_artcolor'
         order_by = ["-weight"]
-
-
-class Cuteness(DbModel):
-    Path = CharField(max_length=1000, unique=True)
-    Animal = AnimalField()
-    last_modified = DateTimeField(default=datetime.datetime.now)
-    deleted = BooleanField(default=False)
-
-    class Meta:
-        database = Database.db
-        table_name = 'walls_cuteness'
-        order_by = ["-last_modified"]
