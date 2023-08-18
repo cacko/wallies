@@ -1,6 +1,6 @@
 from peewee import Model, DoesNotExist
 from .database import Database
-from .fields import CategoryField, AnimalField, ColorField, ImageField, Source
+from .fields import CategoryField, ColorField, ImageField, Source
 from playhouse.shortcuts import model_to_dict
 from peewee import (
     CharField,

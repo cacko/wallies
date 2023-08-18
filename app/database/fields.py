@@ -38,16 +38,6 @@ class CategoryField(CharField):
     def python_value(self, value):
         return Category(value)
 
-
-class AnimalField(CharField):
-
-    def db_value(self, value: AnimalName):
-        return value.value
-
-    def python_value(self, value):
-        return AnimalName(value)
-
-
 class ColorField(IntegerField):
 
     def db_value(self, value) -> int:
