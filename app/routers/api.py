@@ -155,7 +155,7 @@ def get_artwork(title: str):
         raise HTTPException(404)
 
 
-@router.post("/api/artworks.json", tags=["api"])
+@router.post("/api/artworks", tags=["api"])
 def create_upload_file(
     request: Request,
     file: bytes = File(),
