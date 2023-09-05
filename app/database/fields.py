@@ -15,6 +15,7 @@ class Category(StrEnum):
     CARTOON = "cartoon"
     FANTASY = "fantasy"
     NATURE = "nature"
+    HORROR = "horror"
     WHATEVER = "whatever"
 
     @classmethod
