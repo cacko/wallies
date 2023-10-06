@@ -1,9 +1,9 @@
 from functools import reduce
 import logging
 from math import floor
-from typing import Optional, Annotated
+from typing import Optional
 from uuid import uuid4
-from fastapi import APIRouter, Body, HTTPException, Request, Form, File
+from fastapi import APIRouter, HTTPException, Request, Form, File
 from app.database.fields import Category
 from app.database.database import Database
 from app.database.models import Artwork, Artcolor

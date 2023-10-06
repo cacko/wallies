@@ -6,6 +6,8 @@ from uuid import uuid4
 from pathlib import Path
 from corefile import TempPath
 from PIL import Image
+
+
 class Category(StrEnum):
     MINIMAL = "minimal"
     ABSTRACT = "abstract"
@@ -38,6 +40,7 @@ class CategoryField(CharField):
 
     def python_value(self, value):
         return Category(value)
+
 
 class ColorField(IntegerField):
 
