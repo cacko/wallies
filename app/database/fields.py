@@ -12,8 +12,6 @@ class Category(StrEnum):
     MINIMAL = "minimal"
     ABSTRACT = "abstract"
     LANDSCAPE = "landscape"
-    SPORT = "sport"
-    GAMES = "games"
     CARTOON = "cartoon"
     FANTASY = "fantasy"
     NATURE = "nature"
