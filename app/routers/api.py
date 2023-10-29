@@ -82,12 +82,10 @@ def get_list_response(
         query = query.order_by(*order_by)
 
     total = query.count()
-    if total > 0:
+    if page == -1:
+        query = query.order_by(fn.Random()).limit(limit)
+    elif total > 0:
         page = min(max(1, page), floor(total / limit) + 1)
-    # else:
-    #     total = limit
-    #     page = 1
-    #     query = base_query.order_by(fn.Random()).limit(total)
     results = [dict(
         title=artwork.Name,
         raw_src=artwork.raw_src,
