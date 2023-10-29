@@ -78,31 +78,45 @@ def get_list_response(
 
     query = base_query.where(*filters).join(Artcolor).group_by(Artwork)
 
-    if len(order_by):
-        query = query.order_by(*order_by)
-
-    total = query.count()
     if page == -1:
-        query = query.order_by(fn.Random()).limit(limit)
-    elif total > 0:
-        page = min(max(1, page), floor(total / limit) + 1)
-    results = [dict(
-        title=artwork.Name,
-        raw_src=artwork.raw_src,
-        web_uri=artwork.web_uri,
-        webp_src=artwork.webp_src,
-        thumb_src=artwork.thumb_src,
-        category=artwork.Category,
-        colors=artwork.colors,
-        id=artwork.slug,
-        last_modified=datetime.timestamp(artwork.last_modified),
-        deleted=artwork.deleted
-    ) for artwork in query.paginate(page, limit)]
-    headers = {
-        "X-Pagination-Total": f"{total}",
-        "X-Pagination-Page": f"{page}",
-    }
-    return JSONResponse(content=results, headers=headers)
+        results = [dict(
+            title=artwork.Name,
+            raw_src=artwork.raw_src,
+            web_uri=artwork.web_uri,
+            webp_src=artwork.webp_src,
+            thumb_src=artwork.thumb_src,
+            category=artwork.Category,
+            colors=artwork.colors,
+            id=artwork.slug,
+            last_modified=datetime.timestamp(artwork.last_modified),
+            deleted=artwork.deleted
+        ) for artwork in query.order_by(fn.Random()).limit(limit)]
+        return JSONResponse(content=results)
+
+    else:
+        if len(order_by):
+            query = query.order_by(*order_by)
+        total = query.count()
+        if total > 0:
+            page = min(max(1, page), floor(total / limit) + 1)
+
+        results = [dict(
+            title=artwork.Name,
+            raw_src=artwork.raw_src,
+            web_uri=artwork.web_uri,
+            webp_src=artwork.webp_src,
+            thumb_src=artwork.thumb_src,
+            category=artwork.Category,
+            colors=artwork.colors,
+            id=artwork.slug,
+            last_modified=datetime.timestamp(artwork.last_modified),
+            deleted=artwork.deleted
+        ) for artwork in query.paginate(page, limit)]
+        headers = {
+            "X-Pagination-Total": f"{total}",
+            "X-Pagination-Page": f"{page}",
+        }
+        return JSONResponse(content=results, headers=headers)
 
 
 @router.get("/api/artworks", tags=["api"])
