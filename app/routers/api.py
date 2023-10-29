@@ -112,7 +112,7 @@ def list_artworks(
     category: Optional[str] = None,
     color: Optional[str] = None,
     page: int = 1,
-    limit: int = 209,
+    limit: int = 20,
     last_modified: Optional[float] = None
 ):
     return get_list_response(
