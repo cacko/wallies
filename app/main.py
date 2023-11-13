@@ -2,10 +2,12 @@ from fastapi import FastAPI
 from .routers import api
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import app_config
-import uvicorn
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from app.scheduler import Scheduler
+import asyncio
+from hypercorn.config import Config
+from hypercorn.asyncio import serve as hypercorn_serve
 
 ASSETS_PATH = Path(__file__).parent.parent / "assets"
 
@@ -46,13 +48,9 @@ def create_app():
 
 
 def serve():
-    server_config = uvicorn.Config(
-        app=create_app,
-        host=app_config.api.host,
-        port=app_config.api.port,
-        workers=app_config.api.workers,
-        factory=True
-    )
     Scheduler.start()
-    server = uvicorn.Server(server_config)
-    server.run()
+    server_config = Config.from_mapping(
+        bind=f"{app_config.api.host}:{app_config.api.port}",
+        worker_class="trio"
+    )
+    asyncio.run(hypercorn_serve(create_app(), server_config))
