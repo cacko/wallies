@@ -54,7 +54,7 @@ def get_next_url(
 
 def get_list_response(
     category: Optional[str] = None,
-    colors: Optional[str] = None,
+    color: Optional[str] = None,
     page: int = 1,
     limit: int = 20,
     last_modified: Optional[float] = None
