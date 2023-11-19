@@ -1,7 +1,6 @@
 from functools import reduce
 import logging
 from math import ceil, floor
-from turtle import color
 from typing import Optional
 from uuid import uuid4
 from fastapi import APIRouter, HTTPException, Request, Form, File
