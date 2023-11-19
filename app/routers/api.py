@@ -1,6 +1,7 @@
 from functools import reduce
 import logging
-from math import floor
+from math import ceil, floor
+from turtle import color
 from typing import Optional
 from uuid import uuid4
 from fastapi import APIRouter, HTTPException, Request, Form, File
@@ -21,13 +22,40 @@ from peewee import fn
 from app.scheduler import Scheduler
 from app.core.palette import generate_palette
 from datetime import datetime, timedelta, timezone
+from app.config import app_config
+from urllib.parse import urlencode
 
 router = APIRouter()
 
 
+def get_next_url(
+    total: int,
+    page: int,
+    limit: int,
+    last_modified: Optional[float] = None,
+    category: Optional[str] = None,
+    color: Optional[str] = None,
+):
+    try:
+        last_page = ceil(total/limit)
+        page += 1
+        assert last_page + 1 > page
+        params = {k:v for k,v in dict(
+            page=page,
+            limit=limit,
+            category=category,
+            color=color,
+            last_modified=last_modified
+        ).items() if v}
+        return f"{app_config.api.web_host}/api/artworks?{urlencode(params)}"
+    except AssertionError:
+        return None
+
+
+
 def get_list_response(
-    categories: Optional[list[str]] = None,
-    colors: Optional[list[int]] = None,
+    category: Optional[str] = None,
+    colors: Optional[str] = None,
     page: int = 1,
     limit: int = 20,
     last_modified: Optional[float] = None
@@ -36,6 +64,8 @@ def get_list_response(
     filters = [True]
     order_by = []
     try:
+        assert category
+        categories = split_with_quotes(category, ",")
         assert categories
         f_categories = Category.to_categories(categories)
         assert f_categories
@@ -48,6 +78,8 @@ def get_list_response(
                        datetime.fromtimestamp(last_modified))
 
     try:
+        assert color
+        colors = list(map(int, split_with_quotes(color, ",")))
         assert colors
         allcolors = [hex_to_rgb(x.Color)
                      for x in Artcolor.select(Artcolor.Color).distinct()]
@@ -74,7 +106,7 @@ def get_list_response(
     base_query = Artwork.select(
         Artwork,
         fn.string_agg(Artcolor.Color.cast("text"), ",").alias("colors")
-    )
+    
 
     query = base_query.where(*filters).join(Artcolor).group_by(Artwork)
 
@@ -116,6 +148,15 @@ def get_list_response(
             "x-pagination-total": f"{total}",
             "x-pagination-page": f"{page}",
         }
+        if next_url := get_next_url(
+                total=total,
+                page=page,
+                limit=limit,
+                last_modified=last_modified,
+                category=category,
+                color=color
+        ):
+            headers["x-pagination-next"] = next_url
         return JSONResponse(content=results, headers=headers)
 
 
@@ -128,9 +169,8 @@ def list_artworks(
     last_modified: Optional[float] = None
 ):
     return get_list_response(
-        categories=split_with_quotes(category, ",") if category else None,
-        colors=list(map(int, split_with_quotes(color, ","))
-                    ) if color else None,
+        category=category,
+        color=color,
         page=page,
         limit=limit,
         last_modified=last_modified

@@ -43,7 +43,8 @@ def create_app():
         allow_headers=("x-user-token", "x-pagination-page",
                        "x-pagination-total"),
         expose_headers=["x-pagination-page",
-                        "x-pagination-total"]
+                        "x-pagination-total",
+                        'x-pagination-next']
     )
 
     app.include_router(api.router)
