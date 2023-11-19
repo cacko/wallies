@@ -40,7 +40,10 @@ def create_app():
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=("x-user-token","x-pagination-page", "x-pagination-total"),
+        allow_headers=("x-user-token", "x-pagination-page",
+                       "x-pagination-total"),
+        expose_headers=["x-pagination-page",
+                        "x-pagination-total"]
     )
 
     app.include_router(api.router)
