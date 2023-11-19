@@ -113,8 +113,8 @@ def get_list_response(
             deleted=artwork.deleted
         ) for artwork in query.paginate(page, limit)]
         headers = {
-            "X-Pagination-Total": f"{total}",
-            "X-Pagination-Page": f"{page}",
+            "x-pagination-total": f"{total}",
+            "x-pagination-page": f"{page}",
         }
         return JSONResponse(content=results, headers=headers)
 
