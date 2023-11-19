@@ -40,7 +40,7 @@ def get_next_url(
         last_page = ceil(total/limit)
         page += 1
         assert last_page + 1 > page
-        params = {k:v for k,v in dict(
+        params = {k: v for k, v in dict(
             page=page,
             limit=limit,
             category=category,
@@ -50,7 +50,6 @@ def get_next_url(
         return f"{app_config.api.web_host}/api/artworks?{urlencode(params)}"
     except AssertionError:
         return None
-
 
 
 def get_list_response(
@@ -106,7 +105,7 @@ def get_list_response(
     base_query = Artwork.select(
         Artwork,
         fn.string_agg(Artcolor.Color.cast("text"), ",").alias("colors")
-    
+    )
 
     query = base_query.where(*filters).join(Artcolor).group_by(Artwork)
 
