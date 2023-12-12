@@ -5,9 +5,9 @@ from app.config import app_config
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from app.scheduler import Scheduler
-import asyncio
+import trio
 from hypercorn.config import Config
-from hypercorn.asyncio import serve as hypercorn_serve
+from hypercorn.trio import serve as hypercorn_serve
 
 ASSETS_PATH = Path(__file__).parent.parent / "assets"
 
@@ -57,4 +57,4 @@ def serve():
         bind=f"{app_config.api.host}:{app_config.api.port}",
         worker_class="trio"
     )
-    asyncio.run(hypercorn_serve(create_app(), server_config))
+    trio.run(hypercorn_serve, create_app(), server_config)
