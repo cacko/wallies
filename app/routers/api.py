@@ -159,7 +159,7 @@ def get_list_response(
 
 
 @router.get("/api/artworks", tags=["api"])
-def list_artworks(
+async def list_artworks(
     category: Optional[str] = None,
     color: Optional[str] = None,
     page: int = 1,
@@ -176,7 +176,7 @@ def list_artworks(
 
 
 @router.get("/api/artwork/{title}", tags=["api"])
-def get_artwork(title: str):
+async def get_artwork(title: str):
     try:
         artwork = (
             Artwork
