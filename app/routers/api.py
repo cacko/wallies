@@ -141,7 +141,7 @@ def get_list_response(
             id=artwork.slug,
             last_modified=datetime.timestamp(artwork.last_modified),
             deleted=artwork.deleted
-        ) for artwork in query.paginate(page, limit)]
+        ) for artwork in query.order_by(Artwork.last_modified.desc()).paginate(page, limit)]
         headers = {
             "x-pagination-total": f"{total}",
             "x-pagination-page": f"{page}",
