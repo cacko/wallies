@@ -59,7 +59,7 @@ def get_list_response(
     last_modified: Optional[float] = None
 ):
     results = []
-    filters = [True]
+    filters = [Artwork.deleted == False]
     order_by = []
     try:
         assert category
